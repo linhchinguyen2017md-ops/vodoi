@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tín hiệu liên động &amp; bảo vệ Tuabin – NMNĐ Mông Dương 1</title>
+<style>
+  :root{
+    --blue:#0b5394;
+    --blue-dark:#083d6b;
+    --blue-light:#e8f0fa;
+    --red:#c00000;
+    --red-dark:#8a1c1c;
+    --green:#0a7a3d;
+    --orange:#e06c00;
+    --purple:#6b3fa0;
+    --gold:#b8860b;
+    --cyan:#0e7490;
+    --border:#b8c6d9;
+    --bg:#f7f9fc;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI","Times New Roman",Arial,sans-serif;
+    margin:0;
+    padding:24px 16px 60px;
+    background:var(--bg);
+    color:#1c1c1c;
+    line-height:1.65;
+  }
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    background:#fff;
+    padding:36px 44px 52px;
+    border-radius:10px;
+    box-shadow:0 4px 22px rgba(0,0,0,.08);
+  }
+  header{
+    border-bottom:3px double var(--red);
+    padding-bottom:16px;
+    margin-bottom:28px;
+  }
+  header h1{
+    margin:0 0 8px;
+    font-size:22px;
+    color:var(--red-dark);
+    text-align:center;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    line-height:1.35;
+  }
+  header .sub{
+    text-align:center;
+    font-size:14.5px;
+    color:#555;
+    font-weight:600;
+  }
+  header .plant{
+    text-align:center;
+    font-size:13px;
+    color:#777;
+    font-style:italic;
+    margin-top:6px;
+  }
+
+  h2{
+    font-size:18px;
+    color:#fff;
+    background:linear-gradient(90deg,var(--blue),var(--blue-dark));
+    margin:38px 0 18px;
+    padding:12px 18px;
+    border-radius:6px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    line-height:1.4;
+  }
+  h2.part2{
+    background:linear-gradient(90deg,#0a5a2d,#0a7a3d);
+  }
+
+  h3{
+    font-size:16px;
+    color:var(--blue-dark);
+    margin:26px 0 12px;
+    padding-left:14px;
+    border-left:5px solid var(--blue);
+    letter-spacing:.2px;
+  }
+  h3.g1{border-left-color:#0b5394;color:#083d6b;}
+  h3.g2{border-left-color:#c00000;color:#8a1c1c;}
+  h3.g3{border-left-color:#e06c00;color:#8a4500;}
+  h3.g4{border-left-color:#6b3fa0;color:#4a2970;}
+  h3.g5{border-left-color:#0a7a3d;color:#064a25;}
+  h3.g6{border-left-color:#0e7490;color:#0a5566;}
+
+  p{margin:10px 0;text-align:justify;}
+  ul{margin:10px 0 12px 4px;padding-left:24px;}
+  ul li{margin:8px 0;text-align:justify;}
+  ul ul{margin:6px 0;padding-left:20px;}
+  ul ul li{margin:5px 0;}
+  ol{margin:10px 0 12px 4px;padding-left:26px;}
+  ol > li{margin:12px 0;text-align:justify;}
+  strong{color:#0d2a45;}
+  em{color:#555;}
+  .hl-red{color:var(--red);font-weight:700;}
+  .hl-blue{color:var(--blue);font-weight:700;}
+  .hl-green{color:var(--green);font-weight:700;}
+  .hl-orange{color:var(--orange);font-weight:700;}
+  .hl-purple{color:var(--purple);font-weight:700;}
+  .formula{font-family:"Cambria Math","Times New Roman",serif;font-style:italic;white-space:nowrap;}
+
+  /* ===== INTRO BOX ===== */
+  .intro{
+    background:var(--blue-light);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:14px 20px;
+    margin:16px 0;
+    font-size:14.5px;
+  }
+
+  /* ===== BẢNG BẢO VỆ ===== */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:14px 0 22px;
+    font-size:13.5px;
+  }
+  caption{
+    caption-side:top;
+    text-align:left;
+    font-style:italic;
+    font-size:13px;
+    color:#666;
+    padding-bottom:6px;
+  }
+  th,td{
+    border:1px solid var(--border);
+    padding:8px 10px;
+    vertical-align:top;
+  }
+  thead th{
+    color:#fff;
+    text-align:center;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:.2px;
+  }
+  thead.blue th{background:var(--blue);}
+  thead.red th{background:var(--red);}
+  thead.orange th{background:var(--orange);}
+  thead.purple th{background:var(--purple);}
+  thead.green th{background:var(--green);}
+  thead.cyan th{background:var(--cyan);}
+  tbody tr:nth-child(even){background:#f8fbfd;}
+  tbody tr:hover{background:#eef5fb;}
+  .prot-name{font-weight:600;color:#0d2a45;width:34%;}
+  .prot-val{color:var(--red);font-weight:700;width:24%;}
+  .prot-note{color:#333;width:20%;}
+  .prot-mean{font-size:13px;color:#333;}
+  .warn-line{color:var(--orange);font-weight:600;font-style:italic;}
+  .trip-line{color:var(--red);font-weight:700;}
+
+  /* ===== BOX ===== */
+  .note{
+    background:#fff8e1;
+    border-left:5px solid #f0ad00;
+    padding:12px 18px;
+    border-radius:0 6px 6px 0;
+    margin:16px 0;
+    font-size:14.5px;
+  }
+  .note strong{color:#8a5a00;}
+  .alert{
+    background:#fdecea;
+    border-left:5px solid var(--red);
+    padding:12px 18px;
+    border-radius:0 6px 6px 0;
+    margin:16px 0;
+    font-size:14.5px;
+  }
+  .alert strong{color:var(--red);}
+  .safe{
+    background:#e9f7ee;
+    border-left:5px solid var(--green);
+    padding:12px 18px;
+    border-radius:0 6px 6px 0;
+    margin:16px 0;
+    font-size:14.5px;
+  }
+  .safe strong{color:var(--green);}
+
+  /* ===== INTERLOCK CARD ===== */
+  .interlock{
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    margin:18px 0;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+    background:#fff;
+  }
+  .int-head{
+    padding:11px 20px;
+    color:#fff;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:.3px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-transform:uppercase;
+  }
+  .int-head .icon{
+    background:rgba(255,255,255,.22);
+    border-radius:50%;
+    width:32px;height:32px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:800;
+    flex:0 0 auto;
+  }
+  .int-body{padding:14px 22px 16px;font-size:14.5px;}
+  .int-body ul{padding-left:22px;}
+  .int-1 .int-head{background:linear-gradient(90deg,#c00000,#e02b2b);}
+  .int-2 .int-head{background:linear-gradient(90deg,#0b5394,#1667ab);}
+  .int-3 .int-head{background:linear-gradient(90deg,#e06c00,#f08a1e);}
+  .int-4 .int-head{background:linear-gradient(90deg,#0a7a3d,#0e9c4e);}
+  .int-5 .int-head{background:linear-gradient(90deg,#6b3fa0,#8256bc);}
+
+  footer{
+    margin-top:44px;
+    border-top:1px dashed var(--border);
+    padding-top:14px;
+    font-size:13px;
+    color:#666;
+    text-align:center;
+  }
+
+  @media (max-width:700px){
+    .wrap{padding:22px 16px 34px;}
+    header h1{font-size:17px;}
+    h2{font-size:15px;}
+    h3{font-size:14.5px;}
+    table{font-size:12px;}
+    th,td{padding:6px 6px;}
+    .int-body{padding:12px 16px 14px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Các tín hiệu liên động &amp; bảo vệ chính của Tuabin<br>Nhà máy Nhiệt điện Mông Dương 1</h1>
+    <div class="sub">Hệ thống điều khiển Mark VIe tích hợp DCS Ovation</div>
+    <div class="plant">Theo quy trình vận hành và tài liệu kỹ thuật</div>
+  </header>
+
+  <!-- ================= PHẦN I ================= -->
+  <h2>I. Các tín hiệu bảo vệ chính của Tuabin và ý nghĩa</h2>
+
+  <div class="intro">
+    Hệ thống bảo vệ Tuabin thực hiện ngắt khẩn cấp nguồn hơi vào tuabin thông qua các van <strong>Stop chính (MSV)</strong>, van <strong>Điều chỉnh (CV)</strong>, van <strong>Stop tái nhiệt (RSV)</strong>, van <strong>Điều chỉnh tái nhiệt (IV)</strong> và mở <strong>van thông hơi (BVV)</strong> để bảo vệ an toàn cho thiết bị.
+  </div>
+
+  <!-- ===== 1. CƠ KHÍ – ĐỘNG HỌC ROTOR ===== -->
+  <h3 class="g1">1. Nhóm bảo vệ cơ khí – động học rotor</h3>
+
+  <table>
+    <caption>Bảng 1 – Nhóm bảo vệ cơ khí – động học rotor</caption>
+    <thead class="blue">
+      <tr>
+        <th class="prot-name">Bảo vệ</th>
+        <th class="prot-val">Ngưỡng tác động</th>
+        <th class="prot-note">Cảnh báo</th>
+        <th class="prot-mean">Ý nghĩa kỹ thuật</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="prot-name">Vượt tốc chính (Primary Overspeed)</td>
+        <td class="prot-val">3300 v/p (110%)</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Ngăn chặn lực ly tâm vượt ngưỡng phá hủy cơ học lên cánh tuabin và rotor khi xảy ra sự cố sa thải phụ tải hoặc tách lưới.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Vượt tốc khẩn cấp (Emergency Overspeed)</td>
+        <td class="prot-val">3315 v/p (110,5%)</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Tầng bảo vệ dự phòng cuối cùng chống vượt tốc phá hủy rotor.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Độ rung gối trục cao cao</td>
+        <td class="prot-val">≥ 229 µm (trễ 1s)</td>
+        <td class="prot-note warn-line">≥ 150 µm</td>
+        <td class="prot-mean">Ngăn ngừa hư hỏng nghiêm trọng do mất cân bằng động, cọ sát cơ khí giữa phần quay và phần tĩnh hoặc gãy cánh tuabin.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Độ di trục rotor cao</td>
+        <td class="prot-val">≥ +0,89 mm hoặc ≤ −0,89 mm (trễ 1s)</td>
+        <td class="prot-note warn-line">&gt; ± 0,63 mm</td>
+        <td class="prot-mean">Bảo vệ gối đỡ chặn không bị mài mòn, cháy babbitt; ngăn chặn rotor dịch chuyển dọc trục gây va chạm giữa cánh động và cánh tĩnh.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Độ chênh lệch giãn nở rotor/vỏ lớn</td>
+        <td class="prot-val">&lt; −8,31 mm hoặc &gt; +15,52 mm (trễ 10s)</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Đảm bảo khe hở dọc trục giữa rotor và thân vỏ luôn trong dải cho phép trong quá trình gia nhiệt/làm mát, tránh kẹt hoặc cọ quẹt kim loại do tốc độ giãn nở nhiệt khác nhau.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Giãn nở rotor lớn (tại gối 6)</td>
+        <td class="prot-val">&lt; −14,12 mm hoặc &gt; +46,3 mm</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Giám sát hành trình dãn dài tuyệt đối của trục nhằm tránh va chạm cơ khí tổng thể dọc theo đường trục.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Gia tốc/giảm tốc quá nhanh hoặc mất tín hiệu tốc độ</td>
+        <td class="prot-val">1800 v/s</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Ngăn ngừa ứng suất xoắn đột ngột lên trục và nhận biết sự cố mất tín hiệu điều khiển tốc độ.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Chênh lệch giữa các cảm biến đo tốc độ</td>
+        <td class="prot-val">&gt; 5 %</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Đảm bảo tính tin cậy của mạch điều khiển vòng kín; phát hiện kịp thời các hư hỏng của sensor đo tốc độ.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Tần số đẳng thời nhỏ nhất</td>
+        <td class="prot-val">47 Hz (≈ 2820 v/p khi tách lưới giữ tự dùng)</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Ngăn ngừa hiện tượng suy giảm tần số sâu gây hư hỏng các thiết bị phụ trợ tự dùng của tổ máy.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== 2. DẦU VÀ THỦY LỰC ===== -->
+  <h3 class="g2">2. Nhóm bảo vệ hệ thống dầu và thủy lực</h3>
+
+  <table>
+    <caption>Bảng 2 – Nhóm bảo vệ hệ thống dầu và thủy lực</caption>
+    <thead class="red">
+      <tr>
+        <th class="prot-name">Bảo vệ</th>
+        <th class="prot-val">Ngưỡng tác động</th>
+        <th class="prot-note">Cảnh báo</th>
+        <th class="prot-mean">Ý nghĩa kỹ thuật</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="prot-name">Áp lực dầu bôi trơn thấp</td>
+        <td class="prot-val">≤ 1,21 bar (logic 2/3)</td>
+        <td class="prot-note warn-line">&lt; 1,49 bar</td>
+        <td class="prot-mean">Ngăn chặn hiện tượng cháy, hỏng bạc lót các gối đỡ tuabin – máy phát do thiếu màng dầu bôi trơn thủy động.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Mức dầu bôi trơn thấp</td>
+        <td class="prot-val">≤ 406 mm</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Đảm bảo bồn dầu không bị cạn, tránh hiện tượng lọt khí vào đường hút bơm dầu bôi trơn.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Áp lực dầu thủy lực EH thấp</td>
+        <td class="prot-val">≤ 110 bar</td>
+        <td class="prot-note warn-line">≤ 130 bar</td>
+        <td class="prot-mean">Ngăn ngừa mất áp lực điều khiển khiến các servo valve mất kiểm soát hoặc không thể duy trì độ mở/đóng an toàn của các van hơi chính.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Mức dầu bể dầu EH thấp</td>
+        <td class="prot-val">≤ 282 mm</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Chống xâm thực bơm dầu thủy lực cao áp và chống nguy cơ mất hoàn toàn nguồn năng lượng đóng/mở van.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== 3. NHIỆT ĐỘ KIM LOẠI GỐI ĐỠ ===== -->
+  <h3 class="g3">3. Nhóm bảo vệ nhiệt độ kim loại các gối đỡ</h3>
+
+  <table>
+    <caption>Bảng 3 – Nhóm bảo vệ nhiệt độ kim loại các gối đỡ</caption>
+    <thead class="orange">
+      <tr>
+        <th class="prot-name">Bảo vệ</th>
+        <th class="prot-val">Ngưỡng tác động</th>
+        <th class="prot-note">Cảnh báo</th>
+        <th class="prot-mean">Ý nghĩa kỹ thuật</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="prot-name">Nhiệt độ kim loại gối chặn cao</td>
+        <td class="prot-val">≥ 105 °C</td>
+        <td class="prot-note warn-line">99 °C</td>
+        <td class="prot-mean">Bảo vệ lớp hợp kim babbitt của gối chặn không bị nóng chảy do lực dọc trục quá lớn hoặc suy giảm bôi trơn.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Nhiệt độ kim loại gối trục 1 ÷ 3 cao</td>
+        <td class="prot-val">≥ 127 °C</td>
+        <td class="prot-note warn-line">116 °C</td>
+        <td class="prot-mean">Bảo vệ các gối tự lựa (DTP) khu vực nhiệt độ cao của tuabin cao – trung áp.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Nhiệt độ kim loại gối trục 4 ÷ 8 cao</td>
+        <td class="prot-val">≥ 121 °C</td>
+        <td class="prot-note warn-line">107 °C</td>
+        <td class="prot-mean">Bảo vệ các gối đỡ elip khu vực hạ áp và máy phát.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== 4. NHIỆT ĐỘNG HỌC HƠI & BÌNH NGƯNG ===== -->
+  <h3 class="g4">4. Nhóm bảo vệ nhiệt động học hơi và bình ngưng</h3>
+
+  <table>
+    <caption>Bảng 4 – Nhóm bảo vệ nhiệt động học hơi và bình ngưng</caption>
+    <thead class="purple">
+      <tr>
+        <th class="prot-name">Bảo vệ</th>
+        <th class="prot-val">Ngưỡng tác động</th>
+        <th class="prot-note">Cảnh báo</th>
+        <th class="prot-mean">Ý nghĩa kỹ thuật</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="prot-name">Mất chân không bình ngưng</td>
+        <td class="prot-val">Áp suất tuyệt đối ≥ 0,254 bar (khi tốc độ ≥ 300 v/p)</td>
+        <td class="prot-note warn-line">&gt; 0,18 bar</td>
+        <td class="prot-mean">Ngăn chặn hiện tượng tăng nhiệt độ và áp suất buồng thoát hạ áp, chống quá nhiệt cánh hạ áp và tránh nổ màng an toàn bình ngưng.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Nhiệt độ hơi thoát tuabin HP cao</td>
+        <td class="prot-val">≥ 482,2 °C (duy trì 15 phút)<br>hoặc ≥ 510 °C (trip tức thời)</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Chống quá nhiệt do ma sát quạt gió (windage losses) ở các tầng cánh cao áp khi lưu lượng hơi qua phần cao áp nhỏ hoặc bị quẩn hơi.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Nhiệt độ hơi thoát tuabin LP cao</td>
+        <td class="prot-val">≥ 107,2 °C</td>
+        <td class="prot-note warn-line">93,3 °C</td>
+        <td class="prot-mean">Chống hiện tượng giãn nở nhiệt quá mức của thân vỏ hạ áp và bảo vệ tầng cánh cuối.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Nhiệt độ tầng cánh cuối hạ áp cao</td>
+        <td class="prot-val">≥ 260 °C</td>
+        <td class="prot-note warn-line">232 °C</td>
+        <td class="prot-mean">Chống ứng suất nhiệt và quá nhiệt mỏi cho các cánh dài tầng cuối hạ áp.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Nhiệt độ hơi chính, hơi tái nhiệt cao</td>
+        <td class="prot-val">≥ 565 °C</td>
+        <td class="prot-note warn-line">551 °C</td>
+        <td class="prot-mean">Đảm bảo độ bền nhiệt và giới hạn chịu ứng suất cơ lý của vật liệu chế tạo đường ống và cánh tuabin.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Tốc độ giảm nhiệt độ hơi chính, hơi tái lớn</td>
+        <td class="prot-val">−65,5 °C / 15 phút<br><em>(tức −150 °F / 15 phút)</em></td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Chống sốc nhiệt (thermal shock) làm co ngót kim loại đột ngột dẫn đến kẹt, cọ sát hoặc nứt cánh, nguy cơ thủy kích.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Chênh lệch nhiệt độ hơi chính/hơi tái giữa 2 lò lớn</td>
+        <td class="prot-val">&gt; 41,7 °C (duy trì 15 phút)</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Tránh hiện tượng giãn nở nhiệt không đều và mất cân bằng nhiệt động khi hòa hơi 2 lò vào cùng 1 tuabin.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Độ quá nhiệt hơi chính/hơi tái thấp</td>
+        <td class="prot-val">&lt; 75 °F (≈ 24 °C)</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Ngăn chặn dòng hơi ẩm mang theo hạt nước va đập vào cánh tuabin gây xói mòn và nguy cơ thủy kích.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== 5. TÍCH HỢP LÒ – MÁY PHÁT – HỆ THỐNG NGOÀI ===== -->
+  <h3 class="g5">5. Nhóm bảo vệ tích hợp với Lò hơi, Máy phát và hệ thống bên ngoài</h3>
+
+  <table>
+    <caption>Bảng 5 – Nhóm bảo vệ tích hợp với Lò hơi, Máy phát và hệ thống bên ngoài</caption>
+    <thead class="green">
+      <tr>
+        <th class="prot-name">Bảo vệ</th>
+        <th class="prot-val">Ngưỡng / Logic tác động</th>
+        <th class="prot-note">Cảnh báo</th>
+        <th class="prot-mean">Ý nghĩa kỹ thuật</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="prot-name">Trip tuabin do trip máy phát (L86G_TRIP)</td>
+        <td class="prot-val">Logic 2/3 kênh</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Cắt ngay nguồn năng lượng sơ cấp khi máy phát bị sự cố về điện (so lệch, chạm đất, mất kích từ…) để tránh sự cố máy phát chuyển thành động cơ kéo tuabin quay hoặc gây cháy nổ.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Trip tuabin khi cả 2 lò hơi cùng trip</td>
+        <td class="prot-val">MFT cả lò A và B</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Dừng tuabin an toàn khi mất hoàn toàn nguồn cung cấp hơi chính.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Trip do lỗi van thông hơi BVV</td>
+        <td class="prot-val">Theo logic BVV (Bypass Ventilator Valve)</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Đảm bảo an toàn thông hơi làm mát xi lanh cao áp trong các chế độ khởi động dòng ngược hoặc sa thải phụ tải.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Nút ấn dừng khẩn cấp tại CCR &amp; tại chỗ (Front Standard)</td>
+        <td class="prot-val">Thao tác thủ công</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Cho phép trưởng ca/máy trưởng chủ động ngắt máy khẩn cấp bằng thao tác thủ công khi phát hiện tình huống nguy cấp đe dọa con người và thiết bị.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Bảo vệ hệ thống nước làm mát Stator máy phát</td>
+        <td class="prot-val">Áp lực &lt; 5,86 bar<br>Lưu lượng &lt; 56 m³/h<br>Nhiệt độ &gt; 83 °C (duy trì quá 60 phút)<br>hoặc kết hợp dòng điện / độ dẫn điện</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Bảo vệ cuộn dây Stator máy phát không bị cháy hỏng do mất khả năng giải nhiệt cưỡng bức.</td>
+      </tr>
+      <tr>
+        <td class="prot-name">Bảo vệ nhà máy tác động sau 10 phút</td>
+        <td class="prot-val">Mất hoàn toàn các bơm phụ trợ (không có bơm tuần hoàn, không có bơm cấp, không có bơm làm mát kín hoặc không có bơm làm mát phụ nào làm việc)</td>
+        <td class="prot-note">—</td>
+        <td class="prot-mean">Ngăn chặn việc duy trì vận hành khi các hệ thống giải nhiệt cơ bản bị tê liệt, tránh hư hỏng lan tràn toàn bộ dây chuyền tổ máy.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= PHẦN II ================= -->
+  <h2 class="part2">II. Các tín hiệu liên động chính của Tuabin và hệ thống phụ trợ</h2>
+
+  <!-- Liên động 1 -->
+  <div class="interlock int-1">
+    <div class="int-head"><div class="icon">1</div>Đóng nhanh các van hơi khi có lệnh Trip Tuabin</div>
+    <div class="int-body">
+      <p><strong>Khi xuất hiện tín hiệu Trip Tuabin:</strong></p>
+      <ul>
+        <li>Lập tức ngắt điện các cuộn Solenoid xả áp dầu bảo vệ;</li>
+        <li>Đóng nhanh toàn bộ các van <strong>MSV, CV, RSV, IV</strong>;</li>
+        <li>Đồng thời đóng van 1 chiều và van cách ly các cửa trích hơi (từ trích 1 đến 8);</li>
+        <li>Mở van <strong>BVV</strong> và mở các van xả đọng vỏ tuabin / đường hơi.</li>
+      </ul>
+      <div class="alert">
+        <strong>Ý nghĩa:</strong> Ngăn ngừa triệt để dòng hơi chính, hơi tái và hơi trích dội ngược từ các bình gia nhiệt vào tuabin gây quá tốc hoặc thủy kích.
+      </div>
+    </div>
+  </div>
+
+  <!-- Liên động 2 -->
+  <div class="interlock int-2">
+    <div class="int-head"><div class="icon">2</div>Mở van dòng ngược (RFV) khi khởi động</div>
+    <div class="int-body">
+      <p><strong>Khi tuabin quay ở tốc độ ≥ 75%</strong> (chế độ Reverse Flow trong khởi động ấm/nóng): Van <strong>RFV</strong> tự động mở (khoảng 72%) để lấy hơi từ đường Bypass HP qua xi lanh cao áp và xả qua van BVV về bình ngưng.</p>
+      <div class="safe">
+        <strong>Ý nghĩa:</strong> Làm mát và thông gió các tầng cánh tuabin cao áp, ngăn chặn hiện tượng quá nhiệt do ma sát quạt gió khi chạy không tải/tải thấp.
+      </div>
+    </div>
+  </div>
+
+  <!-- Liên động 3 -->
+  <div class="interlock int-3">
+    <div class="int-head"><div class="icon">3</div>Tự động đưa bơm dầu bôi trơn dự phòng vào làm việc</div>
+    <div class="int-body">
+      <ul>
+        <li>Khi bơm dầu chính đang chạy bị trip hoặc áp lực dầu giảm: Tự động khởi động bơm <strong>AC dự phòng</strong>.</li>
+        <li>Nếu cả 2 bơm AC đều mất nguồn hoặc áp lực tụt sâu: Bơm dầu bôi trơn 1 chiều (<strong>DC</strong>) tự động khởi động.</li>
+      </ul>
+      <div class="safe">
+        <strong>Ý nghĩa:</strong> Duy trì màng dầu bôi trơn liên tục, chống cháy bạc gối trục ngay cả khi mất toàn bộ điện tự dùng xoay chiều.
+      </div>
+    </div>
+  </div>
+
+  <!-- Liên động 4 -->
+  <div class="interlock int-4">
+    <div class="int-head"><div class="icon">4</div>Liên động hệ thống vần trục (Turning Gear)</div>
+    <div class="int-body">
+      <ul>
+        <li><strong>Cho phép vần trục làm việc khi:</strong> Áp lực dầu bôi trơn bình thường, tốc độ trục tuabin giảm về <span class="formula">0 v/p</span>.</li>
+        <li><strong>Tự động tách vần trục khi:</strong> Tốc độ tuabin bắt đầu tăng trên ngưỡng vần trục trong quá trình xung động khởi động.</li>
+      </ul>
+      <div class="safe">
+        <strong>Ý nghĩa:</strong> Giữ cho rotor luôn quay chậm để nguội đều, ngăn ngừa hiện tượng cong võng rotor do chênh lệch nhiệt độ giữa phần trên và phần dưới thân xilanh khi dừng máy.
+      </div>
+    </div>
+  </div>
+
+  <!-- Liên động 5 -->
+  <div class="interlock int-5">
+    <div class="int-head"><div class="icon">5</div>Điều khiển hệ thống giảm tải Runback</div>
+    <div class="int-body">
+      <p><strong>Khi mất một trong các thiết bị phụ trợ sau:</strong></p>
+      <ul>
+        <li>Mất 1 bơm tuần hoàn (tải ≥ 315 MW);</li>
+        <li>Mất 1 bơm nước ngưng (tải ≥ 320 MW);</li>
+        <li>Mất 1 bơm cấp (tải &lt; 385 MW);</li>
+        <li>Hoặc sự cố suy giảm làm mát Stator.</li>
+      </ul>
+      <p>➜ Tự động kích hoạt <strong>Runback</strong> giảm tải tổ máy về mức an toàn (<span class="formula">&lt; 310,1 MW</span>).</p>
+      <div class="note">
+        <strong>Ý nghĩa:</strong> Chủ động giảm tải nhanh về giới hạn mang tải của thiết bị phụ còn lại để tránh làm trip toàn bộ tổ máy.
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Tài liệu sát hạch chức danh vận hành – Tín hiệu liên động &amp; bảo vệ Tuabin · NMNĐ Mông Dương 1
+  </footer>
+
+</div>
+</body>
+</html>
