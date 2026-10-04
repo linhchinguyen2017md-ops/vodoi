@@ -3,62 +3,178 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tài Liệu Kỹ Thuật Vận Hành</title>
+  <title>Hệ Thống Quản Lý Tài Liệu Kỹ Thuật</title>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background-color: #eef2f6;
-      margin: 0;
-      padding: 30px 15px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: #f1f5f9;
+      overflow: hidden;
     }
-    .wrapper {
+
+    /* Thanh điều hướng cố định trên cùng */
+    header {
+      background-color: #0f172a;
+      color: #ffffff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 100;
+    }
+    .header-title {
+      font-size: 16px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn {
+      background-color: #2563eb;
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn:hover { background-color: #1d4ed8; }
+    .btn-secondary { background-color: #334155; }
+    .btn-secondary:hover { background-color: #475569; }
+
+    /* Khung nội dung chính */
+    #main-container {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Màn hình danh mục chọn tài liệu ban đầu */
+    #menu-view {
+      padding: 40px 20px;
       max-width: 650px;
       margin: 0 auto;
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      overflow-y: auto;
+      height: 100%;
     }
-    h2 {
-      color: #1a365d;
-      text-align: center;
-      margin-bottom: 25px;
-      font-size: 22px;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 12px;
+    .menu-card {
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
     }
     .menu-list {
       display: flex;
       flex-direction: column;
       gap: 12px;
+      margin-top: 20px;
     }
-    .menu-item {
-      display: block;
-      padding: 14px 18px;
-      background-color: #f8fafc;
+    .doc-link {
+      padding: 14px 16px;
+      background: #f8fafc;
       border: 1px solid #cbd5e1;
       border-radius: 8px;
       color: #0f172a;
       text-decoration: none;
       font-weight: 600;
-      transition: all 0.2s ease;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      transition: 0.2s;
     }
-    .menu-item:hover {
-      background-color: #2563eb;
-      color: #ffffff;
+    .doc-link:hover {
+      background: #2563eb;
+      color: #fff;
       border-color: #2563eb;
       transform: translateX(4px);
+    }
+
+    /* Khung đọc tài liệu */
+    #doc-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: none;
+      background: #ffffff;
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <h2>DANH MỤC TÀI LIỆU KỸ THUẬT</h2>
-    <div class="menu-list">
-      <a class="menu-item" href="bảo vệ tuabin.html">1. Bảo vệ tuabin</a>
-      <a class="menu-item" href="hệ thống khí nén.html">2. Hệ thống khí nén</a>
-      <a class="menu-item" href="Xử lý sự cố sa thải phụ tải – Máy trưởng.html">3. Xử lý sự cố sa thải phụ tải – Máy trưởng</a>
+
+  <!-- Thanh điều khiển trên cùng (luôn luôn xuất hiện) -->
+  <header>
+    <div class="header-title">HỆ THỐNG TÀI LIỆU KỸ THUẬT</div>
+    <div class="nav-actions">
+      <!-- Nút quay lại danh mục hệ thống -->
+      <button class="btn btn-secondary" onclick="goHome()">
+        &#8592; Về danh mục
+      </button>
+      <button class="btn" onclick="reloadDoc()">
+        &#8635; Tải lại tài liệu
+      </button>
     </div>
+  </header>
+
+  <div id="main-container">
+    <!-- Giao diện Menu -->
+    <div id="menu-view">
+      <div class="menu-card">
+        <h3 style="text-align: center; color: #1e293b;">CHỌN TÀI LIỆU VẬN HÀNH</h3>
+        <div class="menu-list">
+          <div class="doc-link" onclick="openDoc('b%E1%BA%A3o%20v%E1%BB%87%20tuabin.html')">
+            <span>1. Bảo vệ tuabin</span>
+            <span>&rarr;</span>
+          </div>
+          <div class="doc-link" onclick="openDoc('h%E1%BB%87%20th%E1%BB%91ng%20kh%C3%AD%20n%C3%A9n.html')">
+            <span>2. Hệ thống khí nén</span>
+            <span>&rarr;</span>
+          </div>
+          <div class="doc-link" onclick="openDoc('X%E1%BB%AD%20l%C3%BD%20s%E1%BB%B1%20c%E1%BB%91%20sa%20th%E1%BA%A3i%20ph%E1%BB%A5%20t%E1%BA%A3i%20%E2%80%93%20M%C3%A1y%20tr%C6%B0%E1%BB%9Fng.html')">
+            <span>3. Xử lý sự cố sa thải phụ tải – Máy trưởng</span>
+            <span>&rarr;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Khung iframe hiển thị nội dung tài liệu -->
+    <iframe id="doc-frame" src=""></iframe>
   </div>
+
+  <script>
+    const menuView = document.getElementById('menu-view');
+    const docFrame = document.getElementById('doc-frame');
+
+    function openDoc(url) {
+      docFrame.src = url;
+      menuView.style.display = 'none';
+      docFrame.style.display = 'block';
+    }
+
+    function goHome() {
+      docFrame.src = '';
+      docFrame.style.display = 'none';
+      menuView.style.display = 'block';
+    }
+
+    function reloadDoc() {
+      if (docFrame.src) {
+        docFrame.contentWindow.location.reload();
+      }
+    }
+  </script>
 </body>
 </html>
