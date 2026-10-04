@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xử lý sự cố sa thải phụ tải – Máy trưởng</title>
+<style>
+  :root{
+    --blue:#0b5394;
+    --blue-dark:#083d6b;
+    --blue-light:#e8f0fa;
+    --red:#c00000;
+    --red-dark:#8a1c1c;
+    --green:#0a7a3d;
+    --orange:#e06c00;
+    --purple:#6b3fa0;
+    --gold:#b8860b;
+    --cyan:#0e7490;
+    --border:#b8c6d9;
+    --bg:#f7f9fc;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI","Times New Roman",Arial,sans-serif;
+    margin:0;
+    padding:24px 16px 60px;
+    background:var(--bg);
+    color:#1c1c1c;
+    line-height:1.65;
+  }
+  .wrap{
+    max-width:1140px;
+    margin:0 auto;
+    background:#fff;
+    padding:36px 44px 52px;
+    border-radius:10px;
+    box-shadow:0 4px 22px rgba(0,0,0,.08);
+  }
+  header{
+    border-bottom:3px double var(--red);
+    padding-bottom:16px;
+    margin-bottom:28px;
+  }
+  header h1{
+    margin:0 0 8px;
+    font-size:22px;
+    color:var(--red-dark);
+    text-align:center;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    line-height:1.35;
+  }
+  header .sub{
+    text-align:center;
+    font-size:14.5px;
+    color:#555;
+    font-weight:600;
+  }
+  header .plant{
+    text-align:center;
+    font-size:13px;
+    color:#777;
+    font-style:italic;
+    margin-top:6px;
+  }
+
+  h2{
+    font-size:18px;
+    color:#fff;
+    background:linear-gradient(90deg,var(--blue),var(--blue-dark));
+    margin:38px 0 18px;
+    padding:12px 18px;
+    border-radius:6px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    line-height:1.4;
+  }
+  h2.red{background:linear-gradient(90deg,#8a1c1c,#c00000);}
+  h2.green{background:linear-gradient(90deg,#0a5a2d,#0a7a3d);}
+  h2.orange{background:linear-gradient(90deg,#b35600,#e06c00);}
+
+  h3{
+    font-size:16px;
+    color:var(--blue-dark);
+    margin:26px 0 12px;
+    padding-left:14px;
+    border-left:5px solid var(--blue);
+    letter-spacing:.2px;
+  }
+  h3.warn{
+    color:var(--red-dark);
+    border-left-color:var(--red);
+  }
+  h3.ok{
+    color:var(--green);
+    border-left-color:var(--green);
+  }
+  p{margin:10px 0;text-align:justify;}
+  ul{margin:10px 0 12px 4px;padding-left:24px;}
+  ul li{margin:8px 0;text-align:justify;}
+  ul ul{margin:6px 0;padding-left:20px;}
+  ul ul li{margin:5px 0;}
+  ol{margin:10px 0 12px 4px;padding-left:26px;}
+  ol > li{margin:12px 0;text-align:justify;}
+  ol > li::marker{font-weight:700;color:var(--blue);}
+  strong{color:#0d2a45;}
+  em{color:#555;}
+  .hl-red{color:var(--red);font-weight:700;}
+  .hl-blue{color:var(--blue);font-weight:700;}
+  .hl-green{color:var(--green);font-weight:700;}
+  .hl-orange{color:var(--orange);font-weight:700;}
+  .formula{font-family:"Cambria Math","Times New Roman",serif;font-style:italic;white-space:nowrap;}
+
+  /* ===== PHENOMENON GRID ===== */
+  .pheno-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:14px;
+    margin:18px 0;
+  }
+  .pheno{
+    border:1px solid var(--border);
+    border-left:5px solid var(--orange);
+    border-radius:0 8px 8px 0;
+    background:#fffbf5;
+    padding:12px 18px;
+    box-shadow:0 2px 6px rgba(0,0,0,.04);
+    font-size:14.5px;
+  }
+  .pheno .ic{
+    display:inline-block;
+    background:var(--orange);
+    color:#fff;
+    font-weight:800;
+    font-size:11px;
+    padding:2px 10px;
+    border-radius:12px;
+    margin-right:8px;
+    letter-spacing:.5px;
+  }
+
+  /* ===== CAUSE CARD ===== */
+  .cause-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(310px,1fr));
+    gap:16px;
+    margin:18px 0;
+  }
+  .cause{
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+    background:#fff;
+  }
+  .cause-head{
+    padding:10px 16px;
+    color:#fff;
+    font-weight:700;
+    font-size:14.5px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    letter-spacing:.3px;
+  }
+  .cause-head .num{
+    background:rgba(255,255,255,.22);
+    border-radius:50%;
+    width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:800;
+    flex:0 0 auto;
+  }
+  .cause-body{padding:12px 18px 16px;font-size:14px;}
+  .c1 .cause-head{background:linear-gradient(90deg,#0b5394,#1667ab);}
+  .c2 .cause-head{background:linear-gradient(90deg,#c00000,#e02b2b);}
+  .c3 .cause-head{background:linear-gradient(90deg,#6b3fa0,#8256bc);}
+
+  /* ===== CASE HEADER ===== */
+  .case-banner{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:16px 22px;
+    border-radius:10px;
+    margin:28px 0 18px;
+    color:#fff;
+    box-shadow:0 4px 14px rgba(0,0,0,.12);
+  }
+  .case-banner .num{
+    flex:0 0 auto;
+    width:52px;height:52px;
+    background:rgba(255,255,255,.22);
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:20px;font-weight:800;
+    border:2px solid rgba(255,255,255,.45);
+  }
+  .case-banner .txt{flex:1;}
+  .case-banner .txt h2{
+    background:none;
+    color:#fff;
+    padding:0;
+    margin:0 0 4px;
+    font-size:17px;
+    letter-spacing:.4px;
+  }
+  .case-banner .txt .desc{
+    font-size:13px;
+    font-style:italic;
+    opacity:.95;
+  }
+  .case-1{background:linear-gradient(135deg,#0a5a2d,#0e9c4e);}
+  .case-2{background:linear-gradient(135deg,#8a1c1c,#c00000);}
+
+  /* ===== STEP ===== */
+  .step{
+    display:flex;
+    gap:14px;
+    margin:16px 0;
+    background:#f7f9fc;
+    border-left:5px solid var(--blue);
+    border-radius:0 8px 8px 0;
+    padding:12px 18px;
+    box-shadow:0 2px 6px rgba(0,0,0,.04);
+  }
+  .step .snum{
+    flex:0 0 auto;
+    width:36px;height:36px;
+    background:var(--blue);
+    color:#fff;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:800;
+    box-shadow:0 2px 6px rgba(11,83,148,.3);
+  }
+  .step .sbody{flex:1;}
+  .step .sbody h4{
+    margin:2px 0 8px;
+    font-size:14.5px;
+    color:var(--blue-dark);
+    text-transform:uppercase;
+    letter-spacing:.3px;
+  }
+  .step.ok{border-left-color:var(--green);background:#f1faf4;}
+  .step.ok .snum{background:var(--green);box-shadow:0 2px 6px rgba(10,122,61,.3);}
+  .step.ok .sbody h4{color:var(--green);}
+  .step.warn{border-left-color:var(--red);background:#fdf3f3;}
+  .step.warn .snum{background:var(--red);box-shadow:0 2px 6px rgba(192,0,0,.3);}
+  .step.warn .sbody h4{color:var(--red-dark);}
+
+  /* ===== BOX ===== */
+  .note{
+    background:#fff8e1;
+    border-left:5px solid #f0ad00;
+    padding:12px 18px;
+    border-radius:0 6px 6px 0;
+    margin:16px 0;
+    font-size:14.5px;
+  }
+  .note strong{color:#8a5a00;}
+  .alert{
+    background:#fdecea;
+    border-left:5px solid var(--red);
+    padding:12px 18px;
+    border-radius:0 6px 6px 0;
+    margin:16px 0;
+    font-size:14.5px;
+  }
+  .alert strong{color:var(--red);}
+  .safe{
+    background:#e9f7ee;
+    border-left:5px solid var(--green);
+    padding:12px 18px;
+    border-radius:0 6px 6px 0;
+    margin:16px 0;
+    font-size:14.5px;
+  }
+  .safe strong{color:var(--green);}
+  .critical{
+    background:linear-gradient(135deg,#8a1c1c,#c00000);
+    color:#fff;
+    border-radius:10px;
+    padding:16px 22px;
+    margin:18px 0;
+    font-size:15px;
+    font-weight:700;
+    text-align:center;
+    letter-spacing:.4px;
+    box-shadow:0 4px 16px rgba(138,28,28,.25);
+    line-height:1.7;
+  }
+  .critical em{color:#ffe27a;font-style:normal;}
+
+  footer{
+    margin-top:44px;
+    border-top:1px dashed var(--border);
+    padding-top:14px;
+    font-size:13px;
+    color:#666;
+    text-align:center;
+  }
+
+  @media (max-width:700px){
+    .wrap{padding:22px 16px 34px;}
+    header h1{font-size:17px;}
+    h2{font-size:15px;}
+    h3{font-size:14.5px;}
+    .case-banner{padding:12px 16px;gap:12px;}
+    .case-banner .num{width:42px;height:42px;font-size:16px;}
+    .case-banner .txt h2{font-size:14.5px;}
+    .step{padding:10px 14px;gap:10px;}
+    .step .snum{width:30px;height:30px;font-size:13px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Phương án xử lý sự cố sa thải phụ tải<br>Dành cho chức danh Máy trưởng</h1>
+    <div class="sub">Load Rejection / Unit Trip – Xử lý theo 2 kịch bản</div>
+    <div class="plant">Chuẩn hóa theo Quy trình vận hành &amp; Logic hệ thống NMNĐ Mông Dương 1</div>
+  </header>
+
+  <!-- ================= I ================= -->
+  <h2>I. Hiện tượng nhận biết</h2>
+
+  <div class="pheno-grid">
+    <div class="pheno"><span class="ic">1</span>Tải tổ máy trên màn hình TCS/DCS <strong>đột ngột rơi tự do</strong> từ công suất đang phát về <span class="formula hl-red">0 MW</span> (hoặc về mức mang tải tự dùng nếu tách lưới giữ tự dùng).</div>
+    <div class="pheno"><span class="ic">2</span>Tốc độ tuabin <strong>dao động mạnh</strong>, có xu hướng tăng vọt tức thời do mất phụ tải cản cơ học.</div>
+    <div class="pheno"><span class="ic">3</span>Xuất hiện cảnh báo trên bảng Alarm: <strong>máy cắt đầu cực 901 cắt</strong> hoặc máy cắt đường dây <strong>500kV/110kV nhảy</strong>; cảnh báo cơ cấu điều khiển van hơi (PLU actuator), rơ le bảo vệ máy phát/lưới điện tác động.</div>
+    <div class="pheno"><span class="ic">4</span>Áp lực hơi chính và hơi tái nhiệt <strong>tăng vọt</strong>; hệ thống Bypass cao áp (HP Bypass) và hạ áp (LP Bypass) nhận tín hiệu mở nhanh (<strong>Q-Open</strong>).</div>
+    <div class="pheno"><span class="ic">5</span>Độ rung gối trục, độ di trục, nhiệt độ hơi thoát tuabin hạ áp bắt đầu <strong>dao động mạnh</strong>.</div>
+  </div>
+
+  <!-- ================= II ================= -->
+  <h2 class="orange">II. Nguyên nhân chính</h2>
+
+  <div class="cause-grid">
+    <div class="cause c1">
+      <div class="cause-head"><div class="num">1</div>Sự cố lưới điện</div>
+      <div class="cause-body">
+        Nhảy máy cắt xuất tuyến <strong>500 kV</strong> hoặc sự cố hệ thống phân phối khiến rơ le bảo vệ đường dây tác động cắt cô lập tổ máy.
+      </div>
+    </div>
+
+    <div class="cause c2">
+      <div class="cause-head"><div class="num">2</div>Sự cố phía Máy phát – MBA chính</div>
+      <div class="cause-body">
+        Rơ le bảo vệ điện tác động (so lệch <strong>87G/87T</strong>, chạm đất rotor <strong>64F</strong>, quá kích từ, mất kích từ, công suất ngược <strong>32G</strong>, v.v.) gửi tín hiệu đi cắt máy cắt đầu cực.
+      </div>
+    </div>
+
+    <div class="cause c3">
+      <div class="cause-head"><div class="num">3</div>Lỗi điều khiển / nguồn tự dùng</div>
+      <div class="cause-body">
+        Mất nguồn điều khiển <strong>FTS/BCU</strong>, mất nguồn cung cấp cho các bo mạch điều khiển hoặc tác động nhầm máy cắt.
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= III ================= -->
+  <h2 class="red">III. Phương án xử lý cụ thể của Máy trưởng</h2>
+
+  <p>Khi xảy ra sự cố, <strong>Máy trưởng là người chỉ huy trực tiếp cụm thiết bị Tuabin tại Phòng điều khiển trung tâm (CCR)</strong>, nhanh chóng thực hiện quy trình xử lý phân định theo 2 kịch bản:</p>
+
+  <!-- ============ TRƯỜNG HỢP 1 ============ -->
+  <div class="case-banner case-1">
+    <div class="num">1</div>
+    <div class="txt">
+      <h2>Trường hợp 1: Sa thải phụ tải nhưng giữ tự dùng thành công (Tuabin KHÔNG trip)</h2>
+      <div class="desc">Tổ máy tách lưới, tuabin duy trì chạy không tải ở tốc độ định mức hoặc chuyển sang cấp tự dùng</div>
+    </div>
+  </div>
+
+  <!-- Bước 1 -->
+  <div class="step ok">
+    <div class="snum">1</div>
+    <div class="sbody">
+      <h4>Thông báo và báo động</h4>
+      <p>Lập tức <strong>hô to</strong> trong phòng điều khiển để Trưởng ca, Trưởng kíp và 2 Lò trưởng nắm bắt tình huống.</p>
+    </div>
+  </div>
+
+  <!-- Bước 2 -->
+  <div class="step ok">
+    <div class="snum">2</div>
+    <div class="sbody">
+      <h4>Kiểm soát tốc độ và các van hơi</h4>
+      <ul>
+        <li>Kiểm tra ngay hành trình đóng nhanh của các van điều chỉnh <strong>CV, IV</strong> để ghìm tốc độ tuabin.</li>
+        <li>Kiểm tra van xả thông hơi <strong>BVV</strong> đã tự động mở để bảo vệ chống vượt tốc tuabin.</li>
+        <li>Giám sát tốc độ tuabin ổn định về quanh mức <span class="formula">3000 v/p</span>.</li>
+        <li>Kiểm tra van dòng ngược <strong>RFV</strong> tự động mở (khoảng <span class="formula">72%</span>) để đưa hơi làm mát cho tuabin cao áp (HP).</li>
+      </ul>
+
+      <div class="critical">
+        <em>⚠ Lưu ý tối thượng:</em> Nếu tốc độ tuabin vượt quá <em>3300 v/p (110%)</em> mà hệ thống bảo vệ tự động không tác động, Máy trưởng phải <em>lập tức ấn nút TRIP khẩn cấp bằng tay</em> tại bàn điều khiển.
+      </div>
+    </div>
+  </div>
+
+  <!-- Bước 3 -->
+  <div class="step ok">
+    <div class="snum">3</div>
+    <div class="sbody">
+      <h4>Phối hợp hệ thống Bypass và Lò hơi</h4>
+      <ul>
+        <li>Phối hợp cùng Lò trưởng giám sát các van <strong>HP Bypass và LP Bypass</strong> mở nhanh (Q-Open) để xả áp bảo vệ lò, tránh làm bật van an toàn bao hơi / hơi chính.</li>
+        <li>Nếu van Bypass bị lỗi không tự mở, lập tức can thiệp <strong>chuyển Manual mở trên DCS</strong> hoặc cử Máy phó xuống xử lý tại chỗ.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Bước 4 -->
+  <div class="step ok">
+    <div class="snum">4</div>
+    <div class="sbody">
+      <h4>Bảo vệ phần hơi trích và thiết bị phụ trợ</h4>
+      <ul>
+        <li>Kiểm tra xác nhận <strong>đóng toàn bộ các van điện và van một chiều</strong> đường hơi trích đến các bình gia nhiệt cao áp (6, 7, 8) và bình khử khí để ngăn nước/hơi dội ngược.</li>
+        <li>Chạy tăng cường thêm <strong>01 bơm chân không bình ngưng dự phòng</strong> để đảm bảo độ chân không khi xả hơi qua LP Bypass.</li>
+        <li>Chạy tăng cường thêm <strong>01 bơm bổ sung nước ngưng dự phòng</strong>.</li>
+        <li>Phối hợp mở van <strong>liên thông hơi tự dùng 2 khối</strong> (nếu cần nguồn hơi hỗ trợ).</li>
+      </ul>
+      <p>➜ Giám sát các thông số an toàn: <em>độ rung, độ di trục, độ lệch tâm, chênh giãn nở, nhiệt độ gối trục, nhiệt độ hơi thoát LP</em> (mở van phun giảm ôn hơi thoát hạ áp).</p>
+    </div>
+  </div>
+
+  <!-- Bước 5 -->
+  <div class="step ok">
+    <div class="snum">5</div>
+    <div class="sbody">
+      <h4>Duy trì hoặc chuẩn bị hòa lưới</h4>
+      <ul>
+        <li>Nếu chưa thể hòa lưới ngay và phải chờ khắc phục sự cố điện kéo dài, báo cáo Trưởng ca xin lệnh <strong>đặt giảm tốc độ tuabin xuống 800 v/p</strong> (khi tốc độ xuống dưới <span class="formula">2500 v/p</span> phải đóng nốt các van hơi trích bình gia nhiệt hạ áp) để giảm ứng suất nhiệt tuabin.</li>
+        <li>Khi bên điện giải trừ xong sự cố, nhận lệnh Trưởng ca phối hợp đưa tốc độ lên <span class="formula">3000 v/p</span> và tiến hành hòa lưới lại.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ TRƯỜNG HỢP 2 ============ -->
+  <div class="case-banner case-2">
+    <div class="num">2</div>
+    <div class="txt">
+      <h2>Trường hợp 2: Sa thải phụ tải dẫn đến TRIP TUABIN</h2>
+      <div class="desc">Do vượt tốc, mất nguồn điều khiển, hoặc bảo vệ điện máy phát kích hoạt trip liên động</div>
+    </div>
+  </div>
+
+  <!-- Bước 1 -->
+  <div class="step warn">
+    <div class="snum">1</div>
+    <div class="sbody">
+      <h4>Khẳng định trạng thái đóng cắt hơi an toàn</h4>
+      <ul>
+        <li>Xác nhận tín hiệu <strong>"TBN TRIP"</strong> trên bảng Alarm.</li>
+        <li>Kiểm tra toàn bộ các van hơi chính <strong>MSV 1-2, CV 1-4, RSV 1-2, IV 1-2</strong> đã đóng triệt để về <span class="formula">0%</span>. Nếu van không đóng hết, lập tức lệnh Máy phó <strong>xả áp dầu thủy lực EH</strong> tại chỗ.</li>
+        <li>Kiểm tra toàn bộ van 1 chiều và van điện các cửa trích hơi (1 ÷ 8) <strong>đóng hoàn toàn</strong>; van xả vỏ tuabin và xả đường hơi chính/tái nhiệt mở ra để đuổi nước đọng, chống thủy kích.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Bước 2 -->
+  <div class="step warn">
+    <div class="snum">2</div>
+    <div class="sbody">
+      <h4>Đảm bảo tuyệt đối hệ thống bôi trơn và dầu chèn</h4>
+      <ul>
+        <li>Giám sát liên tục <strong>áp lực dầu bôi trơn</strong> và <strong>áp lực dầu chèn Hydro máy phát</strong>.</li>
+        <li>Kiểm tra bơm dầu bôi trơn <strong>AC</strong> tự động duy trì; nếu mất nguồn xoay chiều, xác nhận bơm dầu bôi trơn <strong>DC</strong> và bơm dầu chèn <strong>DC</strong> đã tự động khởi động vào làm việc. Lệnh Máy phó xuống kiểm tra tại chỗ ngay.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Bước 3 -->
+  <div class="step warn">
+    <div class="snum">3</div>
+    <div class="sbody">
+      <h4>Chân không bình ngưng và chống quá nhiệt</h4>
+      <ul>
+        <li>Theo dõi tốc độ suy giảm vòng quay (quán tính dừng trục).</li>
+        <li>Tùy thuộc vào việc có sự cố cọ sát cơ khí hay không để quyết định việc duy trì chân không hay <strong>mở van phá chân không bình ngưng</strong> (nếu có rung lắc mạnh, va đập kim loại hoặc mất bôi trơn thì phải phá chân không khẩn cấp).</li>
+        <li>Theo dõi nhiệt độ hơi thoát LP và mở <strong>phun giảm ôn cổ bình ngưng</strong>.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Bước 4 -->
+  <div class="step warn">
+    <div class="snum">4</div>
+    <div class="sbody">
+      <h4>Đưa hệ thống vần trục (Turning Gear) vào làm việc</h4>
+      <ul>
+        <li>Theo dõi sát đến khi tốc độ tuabin giảm về <span class="formula">0 v/p</span>, kiểm tra thiết bị vần trục tự động khởi động (dòng điện vần trục khoảng <span class="formula">30 ÷ 35 A</span>).</li>
+        <li>Nếu vần trục không tự vào, lệnh Máy phó <strong>gài cơ cấu và vần trục bằng tay</strong> tại chỗ để chống cong võng rotor do nhiệt.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Bước 5 -->
+  <div class="step warn">
+    <div class="snum">5</div>
+    <div class="sbody">
+      <h4>Điều tra nguyên nhân và báo cáo</h4>
+      <ul>
+        <li>Phối hợp <strong>Trực chính điện và nhân viên C&amp;I</strong> truy xuất bản ghi thứ tự sự kiện (SOE), tín hiệu rơ le bảo vệ máy phát để tìm chính xác nguyên nhân ngắt máy cắt.</li>
+        <li>Báo cáo đầy đủ tình trạng thiết bị cho Trưởng ca, Trưởng kíp và <strong>ghi chép tỉ mỉ vào nhật ký vận hành</strong>. Sẵn sàng quy trình khởi động lại khi có lệnh.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Nguyên tắc xuyên suốt:</strong> Trong mọi tình huống, ưu tiên hàng đầu là <em>bảo vệ con người – bảo vệ tuabin – bảo vệ máy phát</em>. Không cố duy trì tốc độ hay tải khi các giới hạn an toàn (vượt tốc, mất dầu bôi trơn, mất chân không, mất dầu chèn) đã bị đe dọa.
+  </div>
+
+  <footer>
+    Phương án xử lý sự cố sa thải phụ tải – Dành cho Máy trưởng · NMNĐ Mông Dương 1
+  </footer>
+
+</div>
+</body>
+</html>

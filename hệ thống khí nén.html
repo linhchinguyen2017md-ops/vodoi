@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hệ thống khí nén trung tâm – Sơ đồ &amp; Nguyên lý</title>
+<style>
+  :root{
+    --blue:#0b5394;
+    --blue-dark:#083d6b;
+    --blue-light:#e8f0fa;
+    --cyan:#0e7490;
+    --cyan-dark:#155e75;
+    --red:#c00000;
+    --green:#0a7a3d;
+    --orange:#e06c00;
+    --purple:#6b3fa0;
+    --gold:#b8860b;
+    --border:#b8c6d9;
+    --bg:#f7f9fc;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI","Times New Roman",Arial,sans-serif;
+    margin:0;
+    padding:24px 16px 60px;
+    background:var(--bg);
+    color:#1c1c1c;
+    line-height:1.65;
+  }
+  .wrap{
+    max-width:1140px;
+    margin:0 auto;
+    background:#fff;
+    padding:36px 44px 52px;
+    border-radius:10px;
+    box-shadow:0 4px 22px rgba(0,0,0,.08);
+  }
+  header{
+    border-bottom:3px double var(--cyan);
+    padding-bottom:16px;
+    margin-bottom:28px;
+  }
+  header h1{
+    margin:0 0 8px;
+    font-size:22px;
+    color:var(--cyan-dark);
+    text-align:center;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    line-height:1.35;
+  }
+  header .sub{
+    text-align:center;
+    font-size:14px;
+    color:#555;
+    font-style:italic;
+  }
+  header .scores{
+    text-align:center;
+    margin-top:10px;
+  }
+  .score{
+    display:inline-block;
+    background:#e0f2f5;
+    color:var(--cyan-dark);
+    border:1px solid #a5d5dd;
+    border-radius:20px;
+    padding:2px 14px;
+    font-size:13px;
+    font-weight:600;
+    margin:0 4px;
+  }
+
+  h2{
+    font-size:18px;
+    color:#fff;
+    background:linear-gradient(90deg,var(--cyan),var(--cyan-dark));
+    margin:38px 0 18px;
+    padding:12px 18px;
+    border-radius:6px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    line-height:1.4;
+  }
+  h2 .score-chip{
+    float:right;
+    background:rgba(255,255,255,.22);
+    border-radius:14px;
+    padding:2px 12px;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.2px;
+  }
+
+  h3{
+    font-size:16px;
+    color:var(--cyan-dark);
+    margin:24px 0 10px;
+    padding-left:12px;
+    border-left:5px solid var(--cyan);
+    letter-spacing:.2px;
+  }
+  p{margin:10px 0;text-align:justify;}
+  ul{margin:10px 0 12px 4px;padding-left:24px;}
+  ul li{margin:8px 0;text-align:justify;}
+  ul ul{margin:6px 0;padding-left:20px;}
+  ul ul li{margin:5px 0;}
+  ol{margin:10px 0 12px 4px;padding-left:26px;}
+  ol > li{margin:14px 0;text-align:justify;}
+  ol > li::marker{font-weight:700;color:var(--cyan);}
+  strong{color:#0d2a45;}
+  em{color:#555;}
+  .hl-red{color:var(--red);font-weight:700;}
+  .hl-blue{color:var(--blue);font-weight:700;}
+  .hl-cyan{color:var(--cyan-dark);font-weight:700;}
+  .hl-green{color:var(--green);font-weight:700;}
+  .hl-orange{color:var(--orange);font-weight:700;}
+  .hl-purple{color:var(--purple);font-weight:700;}
+  .formula{font-family:"Cambria Math","Times New Roman",serif;font-style:italic;white-space:nowrap;}
+
+  /* ===== SƠ ĐỒ ASCII ===== */
+  .diagram{
+    background:#0d1b2a;
+    color:#a8e0ff;
+    border-radius:10px;
+    padding:22px 24px;
+    margin:18px 0;
+    overflow-x:auto;
+    box-shadow:inset 0 0 0 1px #1d3557, 0 3px 14px rgba(13,27,42,.25);
+  }
+  .diagram pre{
+    margin:0;
+    font-family:"Consolas","Courier New",monospace;
+    font-size:12.5px;
+    line-height:1.4;
+    white-space:pre;
+    color:#a8e0ff;
+    text-shadow:0 0 4px rgba(80,170,255,.25);
+  }
+  .diagram-caption{
+    text-align:center;
+    font-size:13px;
+    color:#666;
+    font-style:italic;
+    margin-top:-8px;
+    margin-bottom:18px;
+  }
+
+  /* ===== KHỐI GIAI ĐOẠN ===== */
+  .phase{
+    display:flex;
+    gap:16px;
+    margin:18px 0;
+    background:#f7fbfc;
+    border-left:5px solid var(--cyan);
+    border-radius:0 8px 8px 0;
+    padding:14px 20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.04);
+  }
+  .phase .pnum{
+    flex:0 0 auto;
+    width:46px;height:46px;
+    background:var(--cyan);
+    color:#fff;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    font-weight:800;
+    box-shadow:0 2px 6px rgba(14,116,144,.35);
+  }
+  .phase .pbody{flex:1;}
+  .phase .pbody > h3{
+    margin:2px 0 8px;
+    border-left:none;
+    padding-left:0;
+    font-size:15.5px;
+    color:var(--cyan-dark);
+    text-transform:uppercase;
+  }
+
+  /* ===== TÁI SINH 4 BƯỚC ===== */
+  .regen-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:14px;
+    margin:18px 0;
+  }
+  .regen{
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+    background:#fff;
+  }
+  .regen-head{
+    padding:10px 16px;
+    color:#fff;
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:.3px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .regen-head .n{
+    background:rgba(255,255,255,.22);
+    border-radius:50%;
+    width:28px;height:28px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:800;
+    flex:0 0 auto;
+  }
+  .regen-body{padding:12px 18px 16px;font-size:14px;}
+  .regen-body p{margin:4px 0;}
+  .r1 .regen-head{background:linear-gradient(90deg,#6b3fa0,#8256bc);}
+  .r2 .regen-head{background:linear-gradient(90deg,#e06c00,#f08a1e);}
+  .r3 .regen-head{background:linear-gradient(90deg,#0b5394,#1667ab);}
+  .r4 .regen-head{background:linear-gradient(90deg,#0a7a3d,#0e9c4e);}
+
+  /* ===== BOX ===== */
+  .note{
+    background:#fff8e1;
+    border-left:5px solid #f0ad00;
+    padding:12px 18px;
+    border-radius:0 6px 6px 0;
+    margin:16px 0;
+    font-size:14.5px;
+  }
+  .note strong{color:#8a5a00;}
+  .alert{
+    background:#fdecea;
+    border-left:5px solid var(--red);
+    padding:12px 18px;
+    border-radius:0 6px 6px 0;
+    margin:16px 0;
+    font-size:14.5px;
+  }
+  .alert strong{color:var(--red);}
+  .safe{
+    background:#e9f7ee;
+    border-left:5px solid var(--green);
+    padding:12px 18px;
+    border-radius:0 6px 6px 0;
+    margin:16px 0;
+    font-size:14.5px;
+  }
+  .safe strong{color:var(--green);}
+
+  /* ===== HAI NHÁNH KHÍ ===== */
+  .branch-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:18px;
+    margin:18px 0;
+  }
+  .branch{
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 3px 14px rgba(0,0,0,.08);
+    background:#fff;
+    border:1px solid var(--border);
+  }
+  .branch-head{
+    padding:14px 20px;
+    color:#fff;
+    font-size:16px;
+    font-weight:800;
+    letter-spacing:.5px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .branch-head .icon{
+    background:rgba(255,255,255,.22);
+    width:36px;height:36px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;font-weight:800;
+    flex:0 0 auto;
+  }
+  .branch-air .branch-head{background:linear-gradient(135deg,#e06c00,#f08a1e);}
+  .branch-instr .branch-head{background:linear-gradient(135deg,#0b5394,#1667ab);}
+  .branch-body{padding:14px 22px 18px;font-size:14.5px;}
+  .branch-body ul{padding-left:20px;margin:6px 0;}
+  .branch-body li{margin:7px 0;}
+
+  footer{
+    margin-top:44px;
+    border-top:1px dashed var(--border);
+    padding-top:14px;
+    font-size:13px;
+    color:#666;
+    text-align:center;
+  }
+
+  @media (max-width:700px){
+    .wrap{padding:22px 16px 34px;}
+    header h1{font-size:17px;}
+    h2{font-size:15px;}
+    h3{font-size:14.5px;}
+    .diagram pre{font-size:10px;}
+    .phase{padding:12px 14px;gap:10px;}
+    .phase .pnum{width:36px;height:36px;font-size:15px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Hệ thống khí nén trung tâm<br>Sơ đồ nguyên lý &amp; Thuyết minh vận hành</h1>
+    <div class="sub">Khí nén điều khiển (Instrument Air) · Khí nén dịch vụ (Service/Plant Air)</div>
+    <div class="scores">
+      <span class="score">Sơ đồ: 1,0 điểm</span>
+      <span class="score">Thuyết minh: 1,0 điểm</span>
+      <span class="score">Bộ sấy: 1,0 điểm</span>
+    </div>
+  </header>
+
+  <!-- ================= 1 ================= -->
+  <h2>1. Sơ đồ khối nguyên lý tổng quan hệ thống khí nén <span class="score-chip">1,0 điểm</span></h2>
+
+  <p>Hệ thống khí nén trung tâm (cung cấp khí nén điều khiển – <em>Instrument Air</em> và khí nén dịch vụ – <em>Service/Plant Air</em>) được cấu tạo và kết nối theo chu trình công nghệ sau:</p>
+
+  <div class="diagram">
+<pre>
+[ Không khí môi trường ]
+          │
+          ▼
+   ┌─────────────┐
+   │ Phin lọc khí │ (AF)
+   └──────┬──────┘
+          │
+          ▼
+┌───────────────────┐      Nước làm mát kín
+│  Cụm nén hạ áp    │ <──────────────────────
+│       (El)        │
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐     Bẫy xả nước tự động (MTi)
+│ Bình làm mát TG   │ ──> (Xả nước ngưng EWD)
+│       (Ci)        │
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐      Nước làm mát kín
+│  Cụm nén cao áp   │ <──────────────────────
+│       (Eh)        │
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐     Bẫy xả nước tự động (MTa)
+│ Bình làm mát cuối │ ──> (Xả nước ngưng EWD)
+│       (Ca)        │
+└─────────┬─────────┘
+          │
+          ▼
+   ┌─────────────┐
+   │ Van một chiều│ (CV)
+   └──────┬──────┘
+          │
+          ├───────────────────────────────────────────────────────┐
+          │ (Đường cấp khí dịch vụ)                               │ (Đường cấp khí điều khiển)
+          ▼                                                       ▼
+┌───────────────────┐                                   ┌───────────────────┐
+│ Bình chứa khí     │                                   │ Bộ lọc bụi đầu vào│
+│ dịch vụ           │                                   │     (Pre-filter)  │
+└─────────┬─────────┘                                   └─────────┬─────────┘
+          │                                                       │
+          ▼                                                       ▼
+[ Phụ tải khí dịch vụ ]                                 ┌───────────────────┐
+(Thổi xỉ, vệ sinh, EPS)                                 │    BỘ SẤY KHÍ     │
+                                                        │ (Tháp A / Tháp B) │
+                                                        └─────────┬─────────┘
+                                                                  │
+                                                                  ▼
+                                                        ┌───────────────────┐
+                                                        │Bộ lọc bụi đầu ra  │
+                                                        │   (After-filter)  │
+                                                        └─────────┬─────────┘
+                                                                  │
+                                                                  ▼
+                                                        ┌───────────────────┐
+                                                        │ Bình chứa khí     │
+                                                        │ điều khiển (IA)   │
+                                                        └─────────┬─────────┘
+                                                                  │
+                                                                  ▼
+                                                        [ Phụ tải khí điều khiển ]
+                                                        (Van chấp hành Lò, Máy, v.v.)
+</pre>
+  </div>
+  <div class="diagram-caption">Hình 1 – Sơ đồ khối nguyên lý tổng quan hệ thống khí nén trung tâm</div>
+
+  <!-- ================= 2 ================= -->
+  <h2>2. Thuyết minh sơ đồ hệ thống khí nén <span class="score-chip">1,0 điểm</span></h2>
+
+  <p>Hệ thống khí nén công nghiệp (điển hình dòng máy nén trục vít không dầu <strong>Atlas Copco ZR</strong> hai cấp nén kết hợp máy sấy hấp thụ) vận hành theo chu trình:</p>
+
+  <!-- 2.1 -->
+  <div class="phase">
+    <div class="pnum">1</div>
+    <div class="pbody">
+      <h3>Giai đoạn hút và nén khí</h3>
+      <ul>
+        <li>Không khí từ khí quyển đi qua <strong>bộ lọc khí đầu vào (AF)</strong> để loại bỏ bụi bẩn cơ học.</li>
+        <li>Khí sạch đi vào <strong>đầu nén áp lực thấp (El)</strong>, được nén lên áp suất trung gian.</li>
+        <li>Do nhiệt độ khí tăng cao sau khi nén, dòng khí được dẫn qua <strong>bình làm mát trung gian (Ci)</strong> sử dụng nước làm mát kín. Tại đây, độ ẩm ngưng tụ được tách và xả tự động ra ngoài nhờ <strong>bẫy tách ẩm (MTi)</strong> và van xả điện tử (<strong>EWD</strong>).</li>
+        <li>Khí nén tiếp tục đi vào <strong>đầu nén áp lực cao (Eh)</strong> để nâng lên áp suất làm việc định mức (<span class="formula hl-cyan">7,5 ÷ 8,5 bar</span>).</li>
+        <li>Sau đó, khí đi qua <strong>bình làm mát cuối (Ca)</strong>, bẫy tách ẩm (<strong>MTa</strong>) và qua <strong>van một chiều (CV)</strong> ra khỏi máy nén.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 2.2 -->
+  <div class="phase">
+    <div class="pnum">2</div>
+    <div class="pbody">
+      <h3>Hệ thống điều khiển mang tải / không tải</h3>
+      <p>Bộ điều chỉnh áp suất điều khiển van nạp khí đóng/mở thông qua <strong>van điện từ tải/không tải</strong> và <strong>van By-pass</strong> để duy trì áp suất ống góp trong dải cài đặt tự động.</p>
+    </div>
+  </div>
+
+  <!-- 2.3 -->
+  <div class="phase">
+    <div class="pnum">3</div>
+    <div class="pbody">
+      <h3>Phân phối nguồn khí nén</h3>
+
+      <div class="branch-grid">
+
+        <div class="branch branch-air">
+          <div class="branch-head"><div class="icon">⚙</div>Khí nén dịch vụ (Service Air)</div>
+          <div class="branch-body">
+            <ul>
+              <li>Được cấp trực tiếp từ đầu ra máy nén qua bình tích áp dịch vụ.</li>
+              <li>Phục vụ các nhu cầu <strong>thông thổi, xưởng cơ khí, bảo dưỡng</strong>.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="branch branch-instr">
+          <div class="branch-head"><div class="icon">✶</div>Khí nén điều khiển (Instrument Air)</div>
+          <div class="branch-body">
+            <ul>
+              <li>Đòi hỏi tiêu chuẩn <strong>độ khô và sạch rất cao</strong>.</li>
+              <li>Khí được đưa qua <strong>bộ lọc sơ cấp</strong>, đi vào <strong>bộ sấy khô khí nén</strong> (hạ điểm đọng sương PDP xuống <span class="formula hl-cyan">−40 °C</span>), qua <strong>bộ lọc hạt bụi sau sấy</strong> rồi mới tích trữ vào <strong>bình chứa khí điều khiển</strong>.</li>
+              <li>Cấp cho các <strong>van điều khiển, van an toàn, xi-lanh chấp hành</strong> toàn nhà máy.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 3 ================= -->
+  <h2>3. Nguyên lý làm việc của bộ sấy khí nén kiểu hấp thụ tái sinh nhiệt <span class="score-chip">1,0 điểm</span></h2>
+
+  <p>Bộ sấy khí đo lường (như dòng <strong>BD của Atlas Copco</strong>) gồm hai tháp chứa hạt hút ẩm (Silica gel / Alumina hoạt tính) hoạt động luân phiên tuần hoàn theo chu kỳ tự động: <strong>Tháp A hấp thụ làm việc – Tháp B tái sinh</strong>, sau đó đảo chiều ngược lại.</p>
+
+  <h3>▸ Giai đoạn hấp thụ (Làm khô khí nén – Tháp A)</h3>
+  <div class="safe">
+    Khí nén ẩm từ máy nén sau khi qua lọc sơ cấp đi <strong>từ dưới lên</strong> qua lớp hạt hút ẩm trong Tháp A. Các phân tử nước bám dính vào bề mặt mao dẫn của hạt hút ẩm. Dòng khí khô đạt nhiệt độ đọng sương yêu cầu đi ra đỉnh tháp, qua bộ lọc tinh và cấp vào ống góp khí điều khiển. Quá trình này diễn ra liên tục trong suốt chu trình sấy (thường khoảng vài giờ).
+  </div>
+
+  <h3>▸ Giai đoạn tái sinh (Phục hồi hạt hút ẩm – Tháp B)</h3>
+  <p>Được chia làm <strong>4 bước liên tiếp</strong>:</p>
+
+  <div class="regen-grid">
+
+    <div class="regen r1">
+      <div class="regen-head"><div class="n">1</div>Xả giảm áp (Depressurization)</div>
+      <div class="regen-body">
+        <p>Van xả đáy của Tháp B mở ra để xả áp suất khí trong tháp từ áp suất làm việc (<span class="formula">~7 bar</span>) về áp suất khí quyển (<span class="formula">0 bar</span>) qua bộ giảm thanh trong vòng vài phút.</p>
+      </div>
+    </div>
+
+    <div class="regen r2">
+      <div class="regen-head"><div class="n">2</div>Gia nhiệt tái sinh (Heating)</div>
+      <div class="regen-body">
+        <p>Bộ gia nhiệt điện kích hoạt. Một phần khí nén khô (hoặc không khí qua quạt thổi) được gia nhiệt lên nhiệt độ cao (<span class="formula hl-orange">&gt; 120 ÷ 160 °C</span>) thổi ngược qua lớp hạt hút ẩm của Tháp B. Nhiệt lượng làm bay hơi hoàn toàn lượng nước bị giữ trong các hạt hút ẩm, hơi ẩm theo khí xả thoát ra ngoài. Thời gian gia nhiệt thường kéo dài khoảng <strong>3 giờ</strong>.</p>
+      </div>
+    </div>
+
+    <div class="regen r3">
+      <div class="regen-head"><div class="n">3</div>Làm mát (Cooling)</div>
+      <div class="regen-body">
+        <p>Sau khi hoàn tất gia nhiệt, ngắt điện trở sấy; dòng khí nén khô nguội tiếp tục được thổi qua tháp trong khoảng <strong>1 giờ</strong> để làm mát lớp hạt hút ẩm về nhiệt độ làm việc bình thường, chuẩn bị cho chu kỳ làm việc tiếp theo.</p>
+      </div>
+    </div>
+
+    <div class="regen r4">
+      <div class="regen-head"><div class="n">4</div>Cân bằng áp suất (Pressure Equalization)</div>
+      <div class="regen-body">
+        <p>Van xả tái sinh đóng lại, mở van đi tắt nhỏ để nạp khí nén từ từ vào Tháp B cho đến khi áp suất hai tháp bằng nhau (tránh hiện tượng xung áp, nát hạt hút ẩm khi chuyển đổi).</p>
+      </div>
+    </div>
+
+  </div>
+
+  <h3>▸ Chuyển đổi tháp (Switchover)</h3>
+  <div class="note">
+    Khi Tháp B đã hoàn tất cân bằng áp suất và chu trình hấp thụ của Tháp A kết thúc, hệ thống van điện từ điều khiển van đầu vào/ra tự động đảo chiều: <strong>Tháp B chuyển sang Hấp thụ</strong> và <strong>Tháp A bắt đầu chu trình Xả áp – Gia nhiệt – Làm mát – Tái sinh</strong>. Quá trình chuyển đổi diễn ra liên tục, đảm bảo dòng khí điều khiển cấp cho tổ máy luôn <span class="hl-green">liên tục và khô tuyệt đối</span>.
+  </div>
+
+  <div class="alert">
+    <strong>Lưu ý vận hành:</strong> Không khí cấp cho khí nén điều khiển phải đảm bảo điểm đọng sương PDP <span class="formula">≤ −40 °C</span>; bất kỳ sự cố nào ở bộ sấy (mất điện trở sấy, kẹt van chuyển tháp, hỏng bẫy xả) đều có thể làm ẩm khí, gây đóng băng hoặc ăn mòn các van chấp hành trong mùa đông hoặc khi tải cao.
+  </div>
+
+  <footer>
+    Tài liệu sát hạch chức danh vận hành – Hệ thống khí nén trung tâm (IA / Service Air)
+  </footer>
+
+</div>
+</body>
+</html>
